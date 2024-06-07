@@ -1,0 +1,43 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Libraries\Inflector\Rules;
+
+use Libraries\Inflector\Rules\Patterns;
+use Libraries\Inflector\Rules\Substitutions;
+use Libraries\Inflector\Rules\Transformations;
+
+class Ruleset
+{
+    /** @var Transformations */
+    private $regular;
+
+    /** @var Patterns */
+    private $uninflected;
+
+    /** @var Substitutions */
+    private $irregular;
+
+    public function __construct(Transformations $regular, Patterns $uninflected, Substitutions $irregular)
+    {
+        $this->regular     = $regular;
+        $this->uninflected = $uninflected;
+        $this->irregular   = $irregular;
+    }
+
+    public function getRegular(): Transformations
+    {
+        return $this->regular;
+    }
+
+    public function getUninflected(): Patterns
+    {
+        return $this->uninflected;
+    }
+
+    public function getIrregular(): Substitutions
+    {
+        return $this->irregular;
+    }
+}
