@@ -81,7 +81,6 @@ class Storm
         try {
             echo $this->router->resolve();
         } catch (Throwable $e) {
-            var_dump($e);
             $this->response->setStatusCode($e->getCode());
             echo $this->view->renderView('_error', ['code' => $e->getCode(), 'message' => $e->getMessage()]);
         }

@@ -36,6 +36,13 @@ class Router
         if ($modulePath) {
             return $this->handleModule($modulePath, $action);
         }
+
+        // Maybe the user wants to pass some other option:
+        [$module, $action, $vars] = $this->routes->resolveRequestedPath($this->request);
+        $modulePath = $this->routes->resolveModule($module);
+        if ($modulePath) {
+            return $this->handleModule($modulePath, $action);
+        }
         throw new NotFoundException("Module not found", HttpResponseCodes::HTTP_NOT_FOUND);
     }
 
@@ -69,7 +76,7 @@ class Router
         foreach (Storm::getStorm()->getController()->getMiddlewares() as $middleware) {
             $middleware->execute();
         }
-        return Storm::getStorm()->getController()->$action();
+        return Storm::getStorm()->getController()->$action($this->request);
     }
 
 }

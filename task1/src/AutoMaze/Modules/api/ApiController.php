@@ -2,8 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace JobPortal\Modules\api;
+namespace AutoMaze\Modules\api;
 
+use Core\Request;
 use Core\Storm;
 use Core\Controller;
 use engine\HttpResponseCodes;
@@ -13,9 +14,8 @@ use Throwable;
 class ApiController extends Controller
 {
 
-    public function actions()
+    public function actions(Request $request)
     {
-        $request = Storm::getStorm()->request->getBody();
         $module = $request['module'] ?? '';
         $action = $request['action'] ?? '';
         try {
@@ -28,7 +28,6 @@ class ApiController extends Controller
                 $instance->getController()->$action();
             }
         } catch (Throwable $e) {
-            var_dump($e);
             Storm::getStorm()
                 ->response
                 ->setSuccess(false)
@@ -47,34 +46,9 @@ class ApiController extends Controller
             ->sendResponse();
     }
 
-    public function citiesList()
+    public function report_bug(Request $request)
     {
-        Storm::getStorm()
-            ->response
-            ->setSuccess(true)
-            ->setMessage('')
-            ->setData(['cities' => $this->module->getModel()->citiesList()])
-            ->sendResponse();
-    }
-
-    public function categoriesList()
-    {
-        Storm::getStorm()
-            ->response
-            ->setSuccess(true)
-            ->setMessage('')
-            ->setData(['categories' => $this->module->getModel()->categoriesList()])
-            ->sendResponse();
-    }
-
-    public function statesList()
-    {
-        Storm::getStorm()
-            ->response
-            ->setSuccess(true)
-            ->setMessage('')
-            ->setData(['states' => $this->module->getModel()->statesList()])
-            ->sendResponse();
+        var_dump($request);
     }
 
 }

@@ -1,4 +1,5 @@
 <!-- GOOGLE FONTS-->
+<script src="/public/assets/js/htmx.min.js"></script>
 <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/metismenujs/dist/metismenujs.min.css">
 <link rel="stylesheet" href="/public/assets/font-awesome/css/font-awesome.min.css">

@@ -38,7 +38,7 @@ Storm::getStorm()->session->addValue('csrf_token', $csrfToken);
     <!-- /COMPONENT SCRIPT IMPORTS -->
     <title>$title</title>
 </head>
-<body>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
 <div class="overlay">
     {{content}}
 </div>

@@ -2,12 +2,10 @@
 
 declare(strict_types = 1);
 
-namespace JobPortal\Modules\api;
+namespace AutoMaze\Modules\api;
 
 use Core\Storm;
 use Core\Model;
-use JobPortal\CategoryList;
-use JobPortal\StatesList;
 
 class ApiModel extends Model
 {
@@ -29,49 +27,6 @@ class ApiModel extends Model
     public function getDisplayName(): string
     {
         return "api";
-    }
-
-    public function citiesList(): array
-    {
-        $citiesList = Storm::getStorm()->getModuleInstance('City');
-        $byId = Storm::getStorm()->request->getBody()['state_id'] ?? false;
-        $cities = [];
-        if ($byId !== false) {
-            settype($byId, 'int');
-            foreach ($citiesList->getModel()->getCitiesListByStateId($byId) as $city) {
-                $cities[] = $city;
-            }
-            return $cities;
-        }
-        foreach ($citiesList->getModel()->getCitiesList() as $city) {
-            $cities[] = $city;
-        }
-        return $cities;
-    }
-
-    public function categoriesList()
-    {
-        $categoriesList = Storm::getStorm()->getModuleInstance('Category');
-        return array_values($categoriesList->getModel()->getCategoriesList());
-    }
-
-    public function statesList(): array
-    {
-        $statesList = Storm::getStorm()->getModuleInstance('State');
-        $byId = Storm::getStorm()->request->getBody()['country_id'] ?? false;
-        $states = [];
-        if ($byId !== false) {
-            settype($byId, 'int');
-            foreach ($statesList->getModel()->getStatesListByCountry($byId) as $state) {
-                $states[] = $state;
-            }
-            return $states;
-        }
-
-        foreach ($statesList->getStatesList() as $state) {
-            $states[] = $state;
-        }
-        return $states;
     }
 }
 

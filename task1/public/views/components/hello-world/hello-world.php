@@ -1,5 +1,8 @@
-<div class="bg-emerald w-52 h-52 rounded-full shadow-2xl grid place-content-center">
-    <div class="bg-teal w-32 h-32 rounded-full grid place-content-center">
-        <div class="bg-red-500 w-16 h-16 rounded-full">Hello world</div>
-    </div>
+<div id="mainContainer" class="text-center">
+    <h1 class="text-2xl font-bold mb-4">Hello World</h1>
+    <button hx-get="/getForm" hx-target="#mainContainer" hx-swap="outerHTML" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        Report a Bug
+    </button>
 </div>
+
+<div id="alertContainer"></div>
