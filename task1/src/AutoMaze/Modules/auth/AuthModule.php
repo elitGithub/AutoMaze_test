@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace JobPortal\Modules\auth;
+namespace AutoMaze\Modules\auth;
 
 use Core\Middleware\SecurityMiddleware;
 use Core\Module;

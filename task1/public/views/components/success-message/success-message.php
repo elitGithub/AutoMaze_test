@@ -1,0 +1,1 @@
+<div id='flashMessage' class='text-green-500 px-4 py-3 rounded bg-green-200' hx-trigger='load delay:3s' hx-get='/home' hx-swap='outerHTML'>$successMessage</div>

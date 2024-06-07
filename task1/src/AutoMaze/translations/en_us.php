@@ -8,7 +8,7 @@ return [
     'comp_name'               => 'Company Name',
     'comp_website'            => 'Company Website',
     'comp_contact_email'      => 'Company Contact Email',
-    'about_us'              => 'About Us',
+    'about_us'                => 'About Us',
     'terms'                   => 'I accept terms & conditions',
     'register'                => 'Register',
     'password'                => 'Password',
@@ -16,7 +16,7 @@ return [
     'password_mismatch'       => 'Password Mismatch',
     'company_contact_no'      => 'Contact Phone',
     'country'                 => 'Country',
-    'state'           => 'State',
+    'state'                   => 'State',
     'country_select'          => 'Select Country',
     'state_select'            => 'Select State',
     'city_select'             => 'Select City',
@@ -28,4 +28,5 @@ return [
     'logout'                  => 'Logout',
     'dashboard'               => 'Dashboard',
     'admin_panel'             => 'Admin Panel',
+    'report_a_bug'            => 'Report a bug',
 ];

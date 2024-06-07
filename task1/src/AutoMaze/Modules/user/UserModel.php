@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace JobPortal\Modules\user;
+namespace AutoMaze\Modules\user;
 
 use Core\Storm;
 use Core\Model;

@@ -18,12 +18,12 @@ abstract class Model
     public const RULE_UNIQUE     = 'unique';
     public const RULE_NUMBER     = 'number';
 
-    public array    $errors     = [];
-    public array    $params     = [];
-    public array    $rules      = [];
-    protected array $attributes = [];
-    protected string $tableName = '';
-    public Module $module;
+    public array     $errors     = [];
+    public array     $params     = [];
+    public array     $rules      = [];
+    protected array  $attributes = [];
+    protected string $tableName  = '';
+    public Module    $module;
 
     abstract public function params(): array;
 
@@ -57,7 +57,6 @@ abstract class Model
 
     public function validate(): bool
     {
-        $uniqueAttributes = [];
         foreach ($this->rules() as $attribute => $rules) {
             $value = $this->attributes[$attribute];
             foreach ($rules as $rule) {
@@ -156,15 +155,20 @@ abstract class Model
         ];
     }
 
+    public static function getInstance(): Model
+    {
+        return new static();
+    }
+
     public function loadAttributes()
     {
-        $result = Storm::getStorm()->db->query("DESCRIBE `$this->tableName`");
+        $result = Storm::getStorm()->db->getColumnsMetaAsArray($this->tableName);
         if (!$result) {
             throw new \Exception('Error in query');
         }
 
-        while ($row = Storm::getStorm()->db->fetchByAssoc($result)) {
-            $this->attributes[$row['field']] = $row['type'];
+        foreach ($result as $row) {
+            $this->attributes[$row->name] = $row->type;
         }
     }
 

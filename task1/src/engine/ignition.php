@@ -9,8 +9,9 @@ if (!defined('PROJECT_ROOT')) {
 
 define('ROOT_DIR', dirname(__FILE__, 3));
 
-const SRC_DIR = ROOT_DIR . '/src';
-const MODULES_DIR = '/AutoMaze/Modules/';
+const SRC_DIR = ROOT_DIR . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR;
+const MODULES_DIR = 'AutoMaze' . DIRECTORY_SEPARATOR . 'Modules' . DIRECTORY_SEPARATOR;
+
 const APP_NAME = 'AutoMaze';
 
 require_once ROOT_DIR . '/config.php';

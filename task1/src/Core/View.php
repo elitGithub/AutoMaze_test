@@ -22,6 +22,16 @@ class View
         $this->components[$componentName] = ob_get_clean();
     }
 
+    private function generateJsAndCss($view, $viewContent)
+    {
+        // Inject view-specific JS and CSS files as <script> and <link> tags
+        $viewJsTag = $this->generateFileTag($view, 'js');
+        $viewCssTag = $this->generateFileTag($view, 'css');
+        // Replace placeholders in the view content
+        $viewContent = str_replace('{{viewScripts}}', $viewJsTag, $viewContent);
+        return str_replace('{{viewStyles}}', $viewCssTag, $viewContent);
+    }
+
     /**
      * @param  string  $view
      * @param  array   $params
@@ -43,12 +53,7 @@ class View
         $layoutContent = str_replace('{{scripts}}', $this->renderAssets('js'), $layoutContent);
         $layoutContent = str_replace('{{content}}', $viewContent, $layoutContent);
 
-        // Inject view-specific JS and CSS files as <script> and <link> tags
-        $viewJsTag = $this->generateFileTag($view, 'js');
-        $viewCssTag = $this->generateFileTag($view, 'css');
-
-        $layoutContent = str_replace('{{viewScripts}}', $viewJsTag, $layoutContent);
-        $layoutContent = str_replace('{{viewStyles}}', $viewCssTag, $layoutContent);
+        $layoutContent = $this->generateJsAndCss($view, $layoutContent);
 
         // Remove placeholders if no content
         $layoutContent = str_replace(['{{viewScripts}}', '{{viewStyles}}'], '', $layoutContent);
@@ -120,4 +125,23 @@ class View
         include_once Storm::$ROOT_DIR . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $view . '.php';
         return ob_get_clean();
     }
+
+    public function renderViewWithoutLayout(string $view, array $params = [])
+    {
+        // Render the view content
+        $viewContent = $this->renderOnlyView($view);
+
+        // Replace components placeholders with their HTML content
+        foreach ($this->components as $componentName => $componentHtml) {
+            $viewContent = str_replace('{{' . $componentName . '}}', $componentHtml, $viewContent);
+        }
+        $viewContent = $this->generateJsAndCss($view, $viewContent);
+        // Remove placeholders if no content
+        $viewContent = str_replace(['{{viewScripts}}', '{{viewStyles}}'], '', $viewContent);
+
+        // Create a template with the view content and parameters
+        $template = new Template($viewContent, $params);
+        return $template->parseTemplate();
+    }
+
 }

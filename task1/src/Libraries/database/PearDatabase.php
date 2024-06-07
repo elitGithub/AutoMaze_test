@@ -1224,10 +1224,24 @@ class PearDatabase
         return $dict->ExecuteSQLArray($sqlarray);
     }
 
-    public function getColumnNames($tablename)
+    public function getColumnsMetaAsArray($tablename)
     {
         $this->checkConnection();
         $adoflds = $this->database->MetaColumns($tablename);
+        $colNames = [];
+        $i = 0;
+        foreach ($adoflds as $fld) {
+            $colNames[$i] = $fld;
+            $i++;
+        }
+        return $colNames;
+    }
+
+    public function getColumnNames($tablename): array
+    {
+        $this->checkConnection();
+        $adoflds = $this->database->MetaColumns($tablename);
+        $colNames = [];
         $i = 0;
         foreach ($adoflds as $fld) {
             $colNames[$i] = $fld->name;

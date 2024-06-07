@@ -18,21 +18,13 @@ class SecurityMiddleware extends BaseMiddleware
         }
         $headers = array_change_key_case(Storm::getStorm()->request->getHeaders());
         $csrfToken = $headers['x-csrf-token'] ?? null;
-        if (!$csrfToken) {
-            Storm::getStorm()
-                ->response
-                ->setSuccess(false)
-                ->setMessage('Invalid request - missing headers')
-                ->setCode(HttpResponseCodes::HTTP_FORBIDDEN)
-                ->sendResponse();
-        }
 
         if (!$this->isValidCSRFToken($csrfToken)) {
             Storm::getStorm()
                 ->response
                 ->setSuccess(false)
                 ->setMessage('Invalid request - wrong csrf token')
-                ->setData(['headers' => $csrfToken, 'sess' => $_SESSION])
+                ->setData(['request' => Storm::getStorm()->request['form-token'], 'headers' => $csrfToken, 'sess' => $_SESSION])
                 ->setCode(HttpResponseCodes::HTTP_FORBIDDEN)
                 ->sendResponse();
         }
@@ -41,7 +33,14 @@ class SecurityMiddleware extends BaseMiddleware
     private function isValidCSRFToken($csrfToken): bool
     {
         $sessionToken = Storm::getStorm()->session->readKeyValue('csrf_token');
-        return $sessionToken === $csrfToken;
+        if ($sessionToken === $csrfToken) {
+            return true;
+        }
+        if (isset(Storm::getStorm()->request['form-token'])) {
+            return $sessionToken === Storm::getStorm()->request['form-token'];
+        }
+
+        return false;
     }
 
 }

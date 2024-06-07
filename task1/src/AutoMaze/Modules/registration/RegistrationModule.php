@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace JobPortal\Modules\registration;
+namespace AutoMaze\Modules\registration;
 
 use Core\Middleware\SecurityMiddleware;
 use Core\Module;

@@ -4,9 +4,9 @@ declare(strict_types = 1);
 
 namespace AutoMaze\Modules\api;
 
+use Core\Controller;
 use Core\Request;
 use Core\Storm;
-use Core\Controller;
 use engine\HttpResponseCodes;
 use Interfaces\ApiOnlyActions;
 use Throwable;
@@ -48,7 +48,9 @@ class ApiController extends Controller
 
     public function report_bug(Request $request)
     {
-        var_dump($request);
+        $instance = Storm::getStorm()->getModuleInstance('bugreport');
+
+        return $instance->getModel()->reportABug($request);
     }
 
 }

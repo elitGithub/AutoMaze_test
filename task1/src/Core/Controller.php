@@ -35,6 +35,11 @@ abstract class Controller implements ToString
         return Storm::getStorm()->view->renderView($view, $params);
     }
 
+    public function renderOnlyView($view, $params = [])
+    {
+        return Storm::getStorm()->view->renderViewWithoutLayout($view, $params);
+    }
+
     public function setLayout($layout)
     {
         $this->layout = $layout;
@@ -71,5 +76,10 @@ abstract class Controller implements ToString
     public function __toString()
     {
         return get_class($this);
+    }
+
+    public static function getInstance(): Controller
+    {
+        return new static();
     }
 }

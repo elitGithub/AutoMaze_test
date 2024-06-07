@@ -90,12 +90,6 @@ async function apiAjax(url, method = 'GET', data = null) {
 }
 
 
-async function getCitiesList() {
-    const response = await apiFetch('citiesList');
-    return response.data.cities;
-}
-
-async function getCategoriesList() {
-    const response = await apiFetch('categoriesList');
-    return response.data.categories;
-}
+document.addEventListener('htmx:configRequest', (event) => {
+    event.detail.headers['X-CSRF-TOKEN'] = getCSRFToken();
+});

@@ -19,6 +19,11 @@ abstract class Module
         return $this->model;
     }
 
+    public static function getInstance(): Module
+    {
+        return new static();
+    }
+
     public static function generateSecureToken(string $tokenKey)
     {
         $formToken = Storm::getStorm()->security->generateFormToken();

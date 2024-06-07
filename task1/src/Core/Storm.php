@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Core;
 
+use DirectoryIterator;
 use Libraries\database\PearDatabase;
 use Libraries\Inflector\Inflector;
 use Libraries\Inflector\InflectorFactory;
@@ -63,15 +64,50 @@ class Storm
      */
     public function getModuleInstance(string $moduleName)
     {
+        $classPath = 'AutoMaze\\Modules\\';
+        $modulesDir = SRC_DIR . MODULES_DIR;
         $moduleClassName = (stripos($moduleName, 'Module') === false) ? $moduleName . 'Module' : $moduleName;
-        $directoryName = strtolower(preg_replace('/Module$/', '', $moduleClassName));
-        $moduleClass = "AutoMaze\\Modules\\$directoryName\\$moduleClassName";
+        $directoryName = preg_replace('/Module$/', '', $moduleClassName);
+        if (!is_dir("$modulesDir$directoryName")) {
+            foreach (new DirectoryIterator($modulesDir) as $fileInfo) {
+                if ($fileInfo->isDir() && !$fileInfo->isDot()) {
+                    // Compare lowercase versions to handle different capitalizations
+                    if (strtolower($fileInfo->getFilename()) === strtolower($directoryName)) {
+                        $directoryName = $fileInfo->getFilename(); // Correct directory name based on actual folder
+                        $moduleClass = "$classPath$directoryName\\$moduleClassName";
+                        if (!class_exists($moduleClass)) {
+                            $moduleClass = "$classPath$directoryName\\$directoryName" . 'Module';
+                        }
+                        if (class_exists($moduleClass)) {
+                            // Instantiate the module if it is not already instantiated
+                            if (!isset(self::$moduleInstances[$moduleClassName])) {
+                                self::$moduleInstances[$moduleClassName] = $moduleClass::getInstance();
+                            }
+                            return self::$moduleInstances[$moduleClassName];
+                        }
+                    }
+                }
+            }
+        }
+
+        $moduleClass = "$classPath$directoryName\\$moduleClassName";
+        if (!class_exists($moduleClass)) {
+            $moduleClassName = $this->inflector->classify($moduleClassName);
+            $moduleClass = "$classPath$directoryName\\$moduleClassName";
+        }
+
+        if (!class_exists($moduleClass)) {
+            $moduleClassName = $this->router->routes->resolveModule($moduleClass);
+            $moduleClass = "$classPath$directoryName\\$moduleClassName";
+        }
+
         if (class_exists($moduleClass)) {
             if (!isset(self::$moduleInstances[$moduleClassName])) {
                 self::$moduleInstances[$moduleClassName] = new $moduleClass();
             }
             return self::$moduleInstances[$moduleClassName];
         }
+
         return null;
     }
 
