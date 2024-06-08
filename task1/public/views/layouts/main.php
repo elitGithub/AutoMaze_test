@@ -42,7 +42,7 @@ Storm::getStorm()->session->addValue('csrf_token', $csrfToken);
     <!-- /COMPONENT SCRIPT IMPORTS -->
     <title>$title</title>
 </head>
-<body class="bg-gray-100 flex items-center justify-center h-screen" hx-headers='{"X-CSRF-TOKEN": "<?php echo $csrfToken; ?>"}'>
+<body class="bg-gray-900 flex items-center text-white justify-center h-screen" hx-headers='{"X-CSRF-TOKEN": "<?php echo $csrfToken; ?>"}'>
 {{content}}
 <footer></footer>
 </body>

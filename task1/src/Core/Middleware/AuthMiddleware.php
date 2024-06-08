@@ -10,9 +10,10 @@ use Core\Storm;
 class AuthMiddleware extends BaseMiddleware
 {
 
-    public function execute()
+    public function execute(&$action = null)
     {
-        $user = Storm::getStorm()->user;
-        var_dump($user);
+        if (Storm::isGuest()) {
+            $action = 'login';
+        }
     }
 }

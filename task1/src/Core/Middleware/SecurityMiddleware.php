@@ -10,7 +10,7 @@ use Helpers\Routes;
 
 class SecurityMiddleware extends BaseMiddleware
 {
-    public function execute()
+    public function execute(&$action = null)
     {
         // GET requests will get the token.
         if (Storm::getStorm()->request->isGet()) {

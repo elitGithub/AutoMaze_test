@@ -40,6 +40,11 @@ abstract class Controller implements ToString
         return Storm::getStorm()->view->renderViewWithoutLayout($view, $params);
     }
 
+    public function renderComponent($component, $params = [])
+    {
+        return Storm::getStorm()->view->renderComponent($component, $params);
+    }
+
     public function setLayout($layout)
     {
         $this->layout = $layout;
@@ -52,6 +57,7 @@ abstract class Controller implements ToString
 
     public function registerMiddleware(BaseMiddleware $middleware)
     {
+        $middleware->setController($this);
         $this->middlewares[] = $middleware;
     }
 
@@ -60,9 +66,12 @@ abstract class Controller implements ToString
      *
      * @return void
      */
-    public function registerMiddlewares(array $middleware = [])
+    public function registerMiddlewares(array $middlewares = [])
     {
-        $this->middlewares = $middleware;
+        foreach ($middlewares as $middleware) {
+            $middleware->setController($this);
+        }
+        $this->middlewares = $middlewares;
     }
 
     /**

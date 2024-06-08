@@ -67,14 +67,22 @@ class Router
          */
         $module = new $moduleClass($this->request, $this->response);
         $controller = $module->getController();
+
+        // in case the controller doesn't implement home, we can try index.
         if (!method_exists($controller, $action)) {
-            throw new NotFoundException("Action '{$action}' not found in controller '{$controller}'", HttpResponseCodes::HTTP_NOT_FOUND);
+           $action = 'index';
         }
+
         Storm::getStorm()->setController($controller);
         Storm::getStorm()->getController()->setModule($module);
 
         foreach (Storm::getStorm()->getController()->getMiddlewares() as $middleware) {
-            $middleware->execute();
+            $middleware->execute($action);
+        }
+
+        // Middleware may change the action variable - for example Auth changes the action to login.
+        if (!is_callable([$controller, $action])) {
+            throw new NotFoundException("Action '{$action}' not found in controller '{$controller}'", HttpResponseCodes::HTTP_NOT_FOUND);
         }
         return Storm::getStorm()->getController()->$action($this->request);
     }

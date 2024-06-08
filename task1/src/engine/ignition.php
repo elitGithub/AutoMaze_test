@@ -14,8 +14,8 @@ const MODULES_DIR = 'AutoMaze' . DIRECTORY_SEPARATOR . 'Modules' . DIRECTORY_SEP
 
 const APP_NAME = 'AutoMaze';
 
-require_once ROOT_DIR . '/config.php';
-require_once SRC_DIR . '/engine/functions.php';
+require_once ROOT_DIR . DIRECTORY_SEPARATOR . 'config.php';
+require_once SRC_DIR . DIRECTORY_SEPARATOR . 'engine' . DIRECTORY_SEPARATOR . 'functions.php';
 
 const USER_AVATARS_UPLOAD_DIR = ROOT_DIR . '/public/uploads/userImages';
 const SITE_IMAGES_UPLOAD_DIR = ROOT_DIR . '/public/uploads/';

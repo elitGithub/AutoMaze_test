@@ -13,7 +13,7 @@ class View
 
     public function addComponent($componentName)
     {
-        $componentBasePath = Storm::$ROOT_DIR . '/public/views/components/' . $componentName;
+        $componentBasePath = Storm::$ROOT_DIR . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . $componentName;
         $this->styles[] = "/public/views/components/$componentName/$componentName.css";
         $this->scripts[] = "/public/views/components/$componentName/$componentName.js";
 
@@ -141,6 +141,16 @@ class View
 
         // Create a template with the view content and parameters
         $template = new Template($viewContent, $params);
+        return $template->parseTemplate();
+    }
+
+    public function renderComponent($componentName, $params)
+    {
+        $componentBasePath = Storm::$ROOT_DIR . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . $componentName;
+        ob_start();
+        include $componentBasePath . "/$componentName.php";
+       $componentContent = ob_get_clean();
+        $template = new Template($componentContent, $params);
         return $template->parseTemplate();
     }
 

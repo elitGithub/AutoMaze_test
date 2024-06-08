@@ -58,9 +58,9 @@ class BugReportModel extends Model
             $id = Storm::getStorm()->db->getLastInsertID();
             $commentsModule = Storm::getStorm()->getModuleInstance('comments');
             $commentsModule->getModel()->addCommentToBug($id, $request['comment'], $submitted_by);
-            return "<div id='flashMessage' class='text-green-500 px-4 py-3 rounded bg-green-200' hx-get='/home' hx-trigger='load delay:3s' hx-swap='outerHTML'>Bug report submitted successfully!</div>";
+            return $this->module->getController()->renderComponent('success-message');
         }
-        return "<div id='flashMessage' class='text-red-500 px-4 py-3 rounded bg-red-200' hx-get='/home' hx-trigger='load delay:3s' hx-swap='outerHTML'>Failed to submit a bug report. Please try again.</div>";
+        return $this->module->getController()->renderComponent('error-message');
     }
 
     public function getDisplayName(): string

@@ -2,18 +2,24 @@
 
 declare(strict_types = 1);
 
-namespace JobPortal\Modules\Admin;
+namespace AutoMaze\Modules\Admin;
 
 use Core\Controller;
 
 class AdminController extends Controller
 {
 
-    public function panel()
+    public function index()
     {
         $this->setLayout('main');
-        $this->addComponent('navbar');
         return $this->render('admin_dashboard', $this->params);
+    }
+
+
+    public function login()
+    {
+        $this->setLayout('main');
+        return $this->render('login', $this->params);
     }
 
 }

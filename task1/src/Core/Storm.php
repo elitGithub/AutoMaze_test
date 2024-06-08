@@ -130,7 +130,7 @@ class Storm
 
     public static function isGuest(): bool
     {
-        return static::$storm->user->isLoggedIn();
+        return !static::$storm->user->isLoggedIn();
     }
 
     /**

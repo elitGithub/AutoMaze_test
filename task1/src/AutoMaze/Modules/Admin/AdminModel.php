@@ -1,6 +1,6 @@
 <?php
 
-namespace JobPortal\Modules\Admin;
+namespace AutoMaze\Modules\Admin;
 
 use Core\Model;
 

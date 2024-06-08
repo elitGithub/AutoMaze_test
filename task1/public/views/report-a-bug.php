@@ -6,7 +6,7 @@ $csrfToken = Storm::getStorm()->security->generateCsrfToken();
 Storm::getStorm()->session->addValue('csrf_token', $csrfToken);
 ?>
 <div id="mainContainer">
-    <section class="bg-white dark:bg-gray-900 rounded max-w-4xl">
+    <section class="bg-gray-300 dark:bg-gray-900 rounded max-w-4xl">
         <div class="py-8 lg:py-16 px-4 mx-auto max-w-full w-screen">
             <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-center text-gray-900 dark:text-white">$(translation):$report_a_bug</h2>
             <p class="mb-12 lg:mb-16 font-light text-center text-gray-500 dark:text-gray-400 sm:text-xl">Looking forward to hearing from you.</p>
