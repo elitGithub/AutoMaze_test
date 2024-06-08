@@ -29,7 +29,6 @@ class StormLogger
         }
 
         $instance = new self();
-        $handler = new StreamHandler(ROOT_DIR . '/system/logs/' . $loggerName);
         $logWriter = new LogWriter($loggerName);
         if ($instance->isLogAllowed($loggerName) && isset(LogConfig::LOG_CONFIG['LOGGING_ENABLED']) && LogConfig::LOG_CONFIG['LOGGING_ENABLED']) {
             $logWriter
@@ -41,6 +40,7 @@ class StormLogger
             }
         }
 
+        $handler = new StreamHandler(ROOT_DIR . '/public/logs/' . $loggerName);
         $logWriter->pushHandler($handler);
         self::$loggers[$loggerName] = $logWriter;
 

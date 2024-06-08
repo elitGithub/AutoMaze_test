@@ -315,3 +315,35 @@ function getRealIpAddr()
     }
     return $ipaddress;
 }
+
+
+function encodeWebSocketFrame($payload, $type = 'text', $masked = false)
+{
+    $frame = [];
+    $payloadLength = strlen($payload);
+    $frame[] = 0x81;  // 0x80 | 0x01 for final text frame
+
+    if ($payloadLength <= 125) {
+        $frame[] = $payloadLength;
+    } elseif ($payloadLength <= 65535) {
+        $frame[] = 126;
+        $frame[] = ($payloadLength >> 8) & 0xFF;
+        $frame[] = $payloadLength & 0xFF;
+    } else {
+        $frame[] = 127;
+        $frame[] = ($payloadLength >> 56) & 0xFF;
+        $frame[] = ($payloadLength >> 48) & 0xFF;
+        $frame[] = ($payloadLength >> 40) & 0xFF;
+        $frame[] = ($payloadLength >> 32) & 0xFF;
+        $frame[] = ($payloadLength >> 24) & 0xFF;
+        $frame[] = ($payloadLength >> 16) & 0xFF;
+        $frame[] = ($payloadLength >> 8) & 0xFF;
+        $frame[] = $payloadLength & 0xFF;
+    }
+
+    foreach (str_split($payload) as $char) {
+        $frame[] = ord($char);
+    }
+
+    return implode(array_map("chr", $frame));
+}

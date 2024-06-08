@@ -36,6 +36,15 @@ class Routes
 
     public function resolveRequestedPath(Request $request): array
     {
+        $path = $request->getPath();
+        $path = trim($path, '/');
+        $segments = explode('/', $path);
+        $module = $segments[0] ?: 'home';
+        $action = $segments[1] ?? 'home';
+        $vars = [];
+        if (!isset($request['requested_path'])) {
+            return [$module, $action, $vars];
+        }
         $requestedPath = $request['requested_path'];
 
         // Check if the path uses query parameters or path segments
@@ -58,9 +67,14 @@ class Routes
 
     private function handlePathSegments(array $segments): array
     {
+
         if (count($segments) < 2) {
-            return ['home', $segments[0] ?? 'home', $segments[1] ?? null];
+            $module = $segments[0] ?: 'home';
+            $action = $segments[1] ?? 'home';
+            $vars = [];
+            return [$module, $action, $vars];
         }
+
         $module = $segments[0] ?? 'home';
         $action = $segments[1] ?? 'home';
         $vars = array_slice($segments, 2);

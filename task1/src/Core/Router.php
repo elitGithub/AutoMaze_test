@@ -10,8 +10,8 @@ class Router
 {
     protected Storm $app;
     public Request  $request;
-    public Response       $response;
-    public Routes         $routes;
+    public Response $response;
+    public Routes   $routes;
 
     public function __construct(Request $request, Response $response)
     {
@@ -27,33 +27,25 @@ class Router
      */
     public function resolve()
     {
-        $path = $this->request->getPath();
-        $path = trim($path, '/');
-        $segments = explode('/', $path);
-        $module = $segments[0] ?: 'home';
-        $action = $segments[1] ?? 'home';
-        $modulePath = $this->routes->resolveModule($module);
-        if ($modulePath) {
-            return $this->handleModule($modulePath, $action);
-        }
-
-        // Maybe the user wants to pass some other option:
         [$module, $action, $vars] = $this->routes->resolveRequestedPath($this->request);
         $modulePath = $this->routes->resolveModule($module);
         if ($modulePath) {
-            return $this->handleModule($modulePath, $action);
+            return $this->handleModule($modulePath, $action, $vars);
         }
-        throw new NotFoundException("Module not found", HttpResponseCodes::HTTP_NOT_FOUND);
+        [$module, $action, $vars] = $this->routes->resolveRequestedPath($this->request);
+        $modulePath = $this->routes->resolveModule('home');
+        return $this->handleModule($modulePath, $module, $vars);
     }
 
     /**
-     * @param $modulePath
-     * @param $action
+     * @param              $modulePath
+     * @param              $action
+     * @param  array|null  $vars
      *
      * @return mixed
      * @throws \Exceptions\NotFoundException
      */
-    private function handleModule($modulePath, $action)
+    private function handleModule($modulePath, $action, ?array $vars = null)
     {
         $moduleName = basename($modulePath);
         $moduleClass = ucfirst($moduleName) . 'Module';
@@ -68,9 +60,12 @@ class Router
         $module = new $moduleClass($this->request, $this->response);
         $controller = $module->getController();
 
+        if (!is_null($vars)) {
+            $controller->vars = $vars;
+        }
         // in case the controller doesn't implement home, we can try index.
         if (!method_exists($controller, $action)) {
-           $action = 'index';
+            $action = 'index';
         }
 
         Storm::getStorm()->setController($controller);
@@ -80,10 +75,11 @@ class Router
             $middleware->execute($action);
         }
 
-        // Middleware may change the action variable - for example Auth changes the action to login.
+        // Middleware may change the action variable - for example, Auth changes the action to 'login'.
         if (!is_callable([$controller, $action])) {
             throw new NotFoundException("Action '{$action}' not found in controller '{$controller}'", HttpResponseCodes::HTTP_NOT_FOUND);
         }
+
         return Storm::getStorm()->getController()->$action($this->request);
     }
 

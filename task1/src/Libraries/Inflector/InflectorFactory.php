@@ -4,16 +4,13 @@ declare(strict_types=1);
 
 namespace Libraries\Inflector;
 
-use Doctrine\Inflector\Rules\English;
-use Doctrine\Inflector\Rules\French;
-use Doctrine\Inflector\Rules\NorwegianBokmal;
-use Doctrine\Inflector\Rules\Portuguese;
-use Doctrine\Inflector\Rules\Spanish;
-use Doctrine\Inflector\Rules\Turkish;
+use Libraries\Inflector\Rules\English;
+use Libraries\Inflector\Rules\French;
+use Libraries\Inflector\Rules\NorwegianBokmal;
+use Libraries\Inflector\Rules\Portuguese;
+use Libraries\Inflector\Rules\Spanish;
+use Libraries\Inflector\Rules\Turkish;
 use InvalidArgumentException;
-
-use Libraries\Inflector\Language;
-use Libraries\Inflector\LanguageInflectorFactory;
 
 use function sprintf;
 
@@ -28,22 +25,22 @@ final class InflectorFactory
     {
         switch ($language) {
             case Language::ENGLISH:
-                return new \Libraries\Inflector\Rules\English\InflectorFactory();
+                return new English\InflectorFactory();
 
             case Language::FRENCH:
-                return new \Libraries\Inflector\Rules\French\InflectorFactory();
+                return new French\InflectorFactory();
 
             case Language::NORWEGIAN_BOKMAL:
-                return new \Libraries\Inflector\Rules\NorwegianBokmal\InflectorFactory();
+                return new NorwegianBokmal\InflectorFactory();
 
             case Language::PORTUGUESE:
-                return new \Libraries\Inflector\Rules\Portuguese\InflectorFactory();
+                return new Portuguese\InflectorFactory();
 
             case Language::SPANISH:
-                return new \Libraries\Inflector\Rules\Spanish\InflectorFactory();
+                return new Spanish\InflectorFactory();
 
             case Language::TURKISH:
-                return new \Libraries\Inflector\Rules\Turkish\InflectorFactory();
+                return new Turkish\InflectorFactory();
 
             default:
                 throw new InvalidArgumentException(sprintf(

@@ -2,3 +2,138 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Ensure DataTables integrates nicely with Tailwind */
+table.dataTable thead th {
+    @apply bg-gray-800 text-white;
+}
+
+table.dataTable tbody tr {
+    @apply text-gray-700;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    @apply bg-gray-800 text-white border rounded px-2 py-1 mx-1;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    @apply border-gray-300 rounded px-2 py-1;
+}
+
+.dataTables_wrapper .dataTables_length select {
+    @apply border-gray-300 rounded px-2 py-1;
+}
+
+/* Custom styles to override DataTables default styles and align with Tailwind */
+table.dataTable thead th {
+    background-color: #1F2937; /* Tailwind's bg-gray-800 */
+    color: #FFFFFF; /* Tailwind's text-white */
+    border-bottom: 2px solid #374151; /* Tailwind's border-gray-700 */
+    padding: 0.75rem; /* Tailwind's px-4 py-2 */
+}
+
+table.dataTable tbody tr {
+    color: #374151; /* Tailwind's text-gray-700 */
+}
+
+table.dataTable tbody tr:nth-child(even) {
+    background-color: #F9FAFB; /* Tailwind's bg-gray-100 */
+}
+
+table.dataTable tbody tr:hover {
+    background-color: #E5E7EB; /* Tailwind's bg-gray-200 */
+}
+
+table.dataTable tbody td {
+    padding: 0.75rem; /* Tailwind's px-4 py-2 */
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    background-color: #1F2937; /* Tailwind's bg-gray-800 */
+    color: #FFFFFF !important; /* Tailwind's text-white */
+    border: 1px solid #1F2937; /* Tailwind's border-gray-800 */
+    border-radius: 0.375rem; /* Tailwind's rounded */
+    padding: 0.25rem 0.75rem; /* Tailwind's px-2 py-1 */
+    margin: 0 0.125rem; /* Tailwind's mx-1 */
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background-color: #374151; /* Tailwind's bg-gray-700 */
+    border-color: #374151; /* Tailwind's border-gray-700 */
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    border: 1px solid #D1D5DB; /* Tailwind's border-gray-300 */
+    border-radius: 0.375rem; /* Tailwind's rounded */
+    padding: 0.5rem 0.75rem; /* Tailwind's px-2 py-1 */
+}
+
+.dataTables_wrapper .dataTables_length select {
+    border: 1px solid #D1D5DB; /* Tailwind's border-gray-300 */
+    border-radius: 0.375rem; /* Tailwind's rounded */
+    padding: 0.5rem 0.75rem; /* Tailwind's px-2 py-1 */
+}
+
+/* Ensure DataTables integrates nicely with Tailwind */
+table.dataTable thead th {
+    background-color: #1F2937; /* Tailwind's bg-gray-800 */
+    color: #FFFFFF; /* Tailwind's text-white */
+    border-bottom: 2px solid #374151; /* Tailwind's border-gray-700 */
+    padding: 0.75rem; /* Tailwind's px-4 py-2 */
+}
+
+table.dataTable tbody tr {
+    color: #374151; /* Tailwind's text-gray-700 */
+}
+
+table.dataTable tbody tr:nth-child(even) {
+    background-color: #F9FAFB; /* Tailwind's bg-gray-100 */
+}
+
+table.dataTable tbody tr:hover {
+    background-color: #E5E7EB; /* Tailwind's bg-gray-200 */
+}
+
+table.dataTable tbody td {
+    padding: 0.75rem; /* Tailwind's px-4 py-2 */
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    background-color: #1F2937; /* Tailwind's bg-gray-800 */
+    color: #FFFFFF !important; /* Tailwind's text-white */
+    border: 1px solid #1F2937; /* Tailwind's border-gray-800 */
+    border-radius: 0.375rem; /* Tailwind's rounded */
+    padding: 0.25rem 0.75rem; /* Tailwind's px-2 py-1 */
+    margin: 0 0.125rem; /* Tailwind's mx-1 */
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background-color: #374151; /* Tailwind's bg-gray-700 */
+    border-color: #374151; /* Tailwind's border-gray-700 */
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    border: 1px solid #D1D5DB; /* Tailwind's border-gray-300 */
+    border-radius: 0.375rem; /* Tailwind's rounded */
+    padding: 0.5rem 0.75rem; /* Tailwind's px-2 py-1 */
+}
+
+.dataTables_wrapper .dataTables_length select {
+    border: 1px solid #D1D5DB; /* Tailwind's border-gray-300 */
+    border-radius: 0.375rem; /* Tailwind's rounded */
+    padding: 0.5rem 0.75rem; /* Tailwind's px-2 py-1 */
+}
+
+.dt-length select {
+    background-color: #374151; /* Tailwind's bg-gray-700 */
+    border-color: #374151; /* Tailwind's border-gray-700 */
+}
+
+.dt-search input {
+    color: black;
+}
+
+.paging_simple {
+    display: flex;
+    flex-direction: row;
+}

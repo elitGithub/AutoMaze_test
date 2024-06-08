@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace AutoMaze\Modules\home;
 
-use Core\Storm;
 use Core\Model;
 
 class HomeModel extends Model

@@ -3,6 +3,7 @@ module.exports = {
   darkMode: 'class',
   theme: {
     extend: {
+      '150': '48rem', // 50% more than 32rem
       colors: {
         primary: {
           "50": "#eff6ff",

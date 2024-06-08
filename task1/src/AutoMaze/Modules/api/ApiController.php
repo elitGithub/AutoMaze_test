@@ -25,7 +25,7 @@ class ApiController extends Controller
                 if (($controller instanceof ApiOnlyActions) && $controller->isApiOnlyAction($action)) {
                     $controller->setIsApiCall(true);
                 }
-                $instance->getController()->$action();
+                $instance->getController()->$action($request);
             }
         } catch (Throwable $e) {
             Storm::getStorm()
@@ -51,6 +51,22 @@ class ApiController extends Controller
         $instance = Storm::getStorm()->getModuleInstance('bugreport');
 
         return $instance->getModel()->reportABug($request);
+    }
+
+    public function token()
+    {
+        Storm::getStorm()
+            ->response
+            ->setSuccess(true)
+            ->setMessage('')
+            ->setData(['token' => Storm::getStorm()->session->readKeyValue('csrf_token')])
+            ->sendResponse();
+    }
+
+    public function updateBug(Request $request)
+    {
+        $module = Storm::getStorm()->getModuleInstance('admin');
+        $module->getController()->updateBug($request);
     }
 
 }

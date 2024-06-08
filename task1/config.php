@@ -26,3 +26,4 @@ $application_language = 'en_us';
 ini_set('memory_limit', '1024M');  // Increase memory limit
 const MAX_ALLOWED_FILE_SIZE = 3000000;
 $gitClientSecret = 'a2ac03d150e033e2fe69bde4f3550c59b2f900e9';
+$gitClientId = 'Ov23limwerrf227MKAtR';

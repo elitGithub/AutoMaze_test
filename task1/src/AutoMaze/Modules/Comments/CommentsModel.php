@@ -4,7 +4,6 @@ namespace AutoMaze\Modules\Comments;
 
 use Core\Model;
 use Core\Storm;
-use Throwable;
 
 class CommentsModel extends Model
 {
@@ -27,8 +26,24 @@ class CommentsModel extends Model
         if ($this->validate()) {
             $query = "INSERT INTO $this->tableName (`content`, `created_by`, `bug_id`) VALUES (?, ?, ?)";
             Storm::getStorm()->db->pquery($query, [$content, $created_by, $bugId]);
+            $lastInsertId = Storm::getStorm()->db->getLastInsertID();
+
+            $newComment = [
+                'id'         => $lastInsertId,
+                'content'    => $content,
+                'created_by' => $created_by,
+                'bug_id'     => $bugId,
+                'created_at' => date('Y-m-d H:i:s'),
+            ];
+
+            Storm::getStorm()->emitEvent('commentAdded', $newComment);
+
+            return $lastInsertId;
         }
+
+        return null;
     }
+
 
     public function params(): array
     {

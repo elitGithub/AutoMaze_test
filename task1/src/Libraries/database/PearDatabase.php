@@ -19,6 +19,9 @@ if (!defined('DS')) {
     define('DS', DIRECTORY_SEPARATOR);
 }
 
+use function pg_escape_string;
+
+
 include_once('config.performance.php');
 
 require_once 'adodb/adodb-php/adodb.inc.php';
@@ -974,9 +977,7 @@ class PearDatabase
 
     public function getAffectedRowCount(&$result)
     {
-        $rows = $this->database->Affected_Rows();
-        $this->log->debug('getAffectedRowCount rows = ' . $rows);
-        return $rows;
+        return $this->database->Affected_Rows();
     }
 
     public function requireSingleResult($sql, $dieOnError = false, $msg = '', $encode = true)
@@ -1312,6 +1313,7 @@ class PearDatabase
     public function sql_escape_string($str)
     {
         global $adb;
+        $result_data = $str;
         if ($this->isMySql()) {
             $result_data = $adb->real_escape($str);
         } elseif ($this->isPostgres()) {

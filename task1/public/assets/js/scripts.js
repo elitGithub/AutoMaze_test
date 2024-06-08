@@ -11,13 +11,16 @@ function enforceNumberOnlyInput(event) {
 }
 
 // Function to get CSRF token
-function getCSRFToken() {
-    return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+async function getCSRFToken() {
+    const res = await fetch(`/api/token`);
+    const json = await res.json();
+    const response = checkResponse(json);
+    return response.data.token;
 }
 
 // Centralized Fetch function
 async function apiFetch(url, method = 'GET', data = null) {
-    const csrfToken = getCSRFToken();
+    const csrfToken = await getCSRFToken();
 
     const defaultHeaders = {
         'X-CSRF-TOKEN': csrfToken,
@@ -57,7 +60,7 @@ function checkResponse(response) {
 }
 
 async function apiAjax(url, method = 'GET', data = null) {
-    const csrfToken = getCSRFToken();
+    const csrfToken = await getCSRFToken();
 
     const defaultHeaders = {
         'X-CSRF-TOKEN': csrfToken,
@@ -88,8 +91,3 @@ async function apiAjax(url, method = 'GET', data = null) {
         throw new Error(`HTTP error! error: ${error}`);
     }
 }
-
-
-document.addEventListener('htmx:configRequest', (event) => {
-    event.detail.headers['X-CSRF-TOKEN'] = getCSRFToken();
-});

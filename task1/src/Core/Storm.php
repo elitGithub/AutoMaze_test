@@ -45,9 +45,9 @@ class Storm
         $this->setStorm($this);
         $this->request = new Request();
         $this->response = new Response();
+        $this->db = PearDatabase::getInstance();
         $this->router = new Router($this->request, $this->response);
         $this->session = new Session();
-        $this->db = PearDatabase::getInstance();
         $this->view = new View();
         $this->user = new User();
         $this->security = new Security();
@@ -68,6 +68,19 @@ class Storm
         $modulesDir = SRC_DIR . MODULES_DIR;
         $moduleClassName = (stripos($moduleName, 'Module') === false) ? $moduleName . 'Module' : $moduleName;
         $directoryName = preg_replace('/Module$/', '', $moduleClassName);
+
+        if (!is_dir("$modulesDir$directoryName")) {
+            $directoryName = $this->inflector->capitalize($directoryName);
+        }
+
+        if (!is_dir("$modulesDir$directoryName")) {
+            $directoryName = $this->inflector->pluralize($directoryName);
+        }
+
+        if (!is_dir("$modulesDir$directoryName")) {
+            $directoryName = $this->inflector->singularize($directoryName);
+        }
+
         if (!is_dir("$modulesDir$directoryName")) {
             foreach (new DirectoryIterator($modulesDir) as $fileInfo) {
                 if ($fileInfo->isDir() && !$fileInfo->isDot()) {
@@ -169,4 +182,39 @@ class Storm
             call_user_func($callback);
         }
     }
+
+    function emitEvent($event, $data) {
+        $message = json_encode(['event' => $event, 'data' => $data], JSON_UNESCAPED_UNICODE);
+        if ($message === false) {
+            echo "Failed to encode JSON\n";
+            return false;
+        }
+
+        $encodedMessage = encodeWebSocketFrame($message);
+        $host = '127.0.0.1';
+        $port = 8081;  // Ensure this is the correct port where the WebSocket server is listening for internal events
+
+        $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+        if ($socket === false) {
+            echo "socket_create() failed: reason: " . socket_strerror(socket_last_error()) . "\n";
+            return false;
+        }
+
+        if (socket_connect($socket, $host, $port) === false) {
+            echo "socket_connect() failed: reason: " . socket_strerror(socket_last_error($socket)) . "\n";
+            socket_close($socket);
+            return false;
+        }
+
+        if (socket_write($socket, $encodedMessage, strlen($encodedMessage)) === false) {
+            echo "socket_write() failed: reason: " . socket_strerror(socket_last_error($socket)) . "\n";
+            socket_close($socket);
+            return false;
+        }
+
+        socket_close($socket);
+        return true;
+    }
+
+
 }

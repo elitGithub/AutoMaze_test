@@ -14,6 +14,7 @@ abstract class Controller implements ToString
     public string $action = '';
     public Module $module;
     protected array $params = [];
+    public array    $vars   = [];
 
     public function setModule(Module $module): void
     {
@@ -35,14 +36,14 @@ abstract class Controller implements ToString
         return Storm::getStorm()->view->renderView($view, $params);
     }
 
-    public function renderOnlyView($view, $params = [])
+    public function renderOnlyView($view, $params = [], $vars = null)
     {
-        return Storm::getStorm()->view->renderViewWithoutLayout($view, $params);
+        return Storm::getStorm()->view->renderViewWithoutLayout($view, $params, $vars);
     }
 
-    public function renderComponent($component, $params = [])
+    public function renderComponent($component, $params = [], $vars = null)
     {
-        return Storm::getStorm()->view->renderComponent($component, $params);
+        return Storm::getStorm()->view->renderComponent($component, $params, $vars);
     }
 
     public function setLayout($layout)

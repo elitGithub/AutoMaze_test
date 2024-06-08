@@ -126,7 +126,7 @@ class View
         return ob_get_clean();
     }
 
-    public function renderViewWithoutLayout(string $view, array $params = [])
+    public function renderViewWithoutLayout(string $view, array $params = [], $vars = null)
     {
         // Render the view content
         $viewContent = $this->renderOnlyView($view);
@@ -135,6 +135,7 @@ class View
         foreach ($this->components as $componentName => $componentHtml) {
             $viewContent = str_replace('{{' . $componentName . '}}', $componentHtml, $viewContent);
         }
+
         $viewContent = $this->generateJsAndCss($view, $viewContent);
         // Remove placeholders if no content
         $viewContent = str_replace(['{{viewScripts}}', '{{viewStyles}}'], '', $viewContent);
@@ -144,12 +145,13 @@ class View
         return $template->parseTemplate();
     }
 
-    public function renderComponent($componentName, $params)
+    public function renderComponent($componentName, $params, $vars)
     {
         $componentBasePath = Storm::$ROOT_DIR . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . $componentName;
         ob_start();
         include $componentBasePath . "/$componentName.php";
-       $componentContent = ob_get_clean();
+        $componentContent = ob_get_clean();
+        $componentContent = $this->generateJsAndCss($componentName, $componentContent);
         $template = new Template($componentContent, $params);
         return $template->parseTemplate();
     }

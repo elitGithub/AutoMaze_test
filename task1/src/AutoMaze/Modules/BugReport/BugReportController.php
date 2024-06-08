@@ -7,9 +7,5 @@ use Core\Request;
 
 class BugReportController extends Controller
 {
-    public function report_bug(Request $request)
-    {
-        $this->module->getModel()->validate();
-        var_dump($request);
-    }
+
 }

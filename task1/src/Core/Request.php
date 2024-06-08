@@ -31,7 +31,8 @@ class Request implements IteratorAggregate, ArrayAccess
             if (empty($_POST)) {
                 $rawInput = $this->getRawBody();
                 if ($rawInput !== false) {
-                    $decoded = json_decode(html_entity_decode($rawInput, ENT_QUOTES), true);
+                    $cleaned = html_entity_decode($rawInput, ENT_QUOTES);
+                    $decoded = json_decode($cleaned, true);
                     if (isset($decoded['body'])) {
                         $decoded = $decoded['body'];
                     }
@@ -46,6 +47,7 @@ class Request implements IteratorAggregate, ArrayAccess
                         }
                     }
                 }
+
             } else {
                 $sanitizedPost = $this->sanitizePostData($_POST);
                 foreach ($sanitizedPost as $key => $value) {
@@ -212,7 +214,6 @@ class Request implements IteratorAggregate, ArrayAccess
         }
         // Initialize the stack with the POST data
         $stack->push(['data' => $postData, 'ref' => &$sanitizedData]);
-
         while (!$stack->isEmpty()) {
             $current = $stack->pop();
             $currentData = $current['data'];

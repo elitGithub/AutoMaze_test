@@ -27,15 +27,29 @@ class BugReportModel extends Model
         return $this->rules;
     }
 
-    public function getBugs()
+    public function updateBug(int $id, string $status)
     {
-        $query = "SELECT * FROM $this->tableName";
+        $query = "UPDATE `$this->tableName` SET `status` = ? WHERE `id` = ? RETURNING *";
+        $res = Storm::getStorm()->db->pquery($query, [$status, $id]);
+        $affectedRows = Storm::getStorm()->db->num_rows($res);
+
+        if ($affectedRows > 0) {
+            Storm::getStorm()->emitEvent('bugStatusUpdate', $status);
+        }
+
+        return $affectedRows;
+    }
+
+
+    public function getBugs(): array
+    {
+        $comments = Storm::getStorm()->getModuleInstance('comments');
+        $query = "SELECT * FROM `$this->tableName`;";
         $res = Storm::getStorm()->db->query($query);
         $bugs = [];
         while ($row = Storm::getStorm()->db->fetchByAssoc($res)) {
             $bugs[] = $row;
         }
-
         return $bugs;
     }
 
@@ -53,7 +67,7 @@ class BugReportModel extends Model
         }
         if ($this->validate()) {
             extract($this->attributes);
-            $query = "INSERT INTO $this->tableName (`submitted_by`, `title`, `urgency`, `comment_id`, `status`) VALUES (?, ?, ?, 0, 'new')";
+            $query = "INSERT INTO $this->tableName (`submitted_by`, `title`, `urgency`, `status`) VALUES (?, ?, ?, 'new')";
             Storm::getStorm()->db->pquery($query, [$submitted_by, $title, $urgency]);
             $id = Storm::getStorm()->db->getLastInsertID();
             $commentsModule = Storm::getStorm()->getModuleInstance('comments');
@@ -70,14 +84,13 @@ class BugReportModel extends Model
 
     private function createBugsTable()
     {
+        Storm::getStorm()->db->query('DROP TABLE IF EXISTS ' . $this->tableName);
         $query = 'CREATE TABLE `bug_reports` (
     `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     `submitted_by` VARCHAR(255) NOT NULL,
     `title` VARCHAR(255) NOT NULL,
     `urgency` VARCHAR(255) NOT NULL,
-    `comment_id` VARCHAR(255) NOT NULL,
-    `status` VARCHAR(255) NOT NULL,
-     FOREIGN KEY (`comment_id`) REFERENCES `comments`(`id`) ON DELETE CASCADE);
+    `status` VARCHAR(255) NOT NULL);
 CREATE INDEX `idx_urgency` ON `bug_reports` (`urgency`);
 CREATE INDEX `idx_submitted_by` ON `bug_reports` (`submitted_by`);
 CREATE INDEX `idx_status` ON `bug_reports` (`status`);
