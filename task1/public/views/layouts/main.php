@@ -46,45 +46,6 @@ Storm::getStorm()->session->addValue('csrf_token', $csrfToken);
 <body class="bg-gray-900 flex items-center text-white justify-center h-screen" hx-headers='{"X-CSRF-TOKEN": "<?php echo $csrfToken; ?>"}'>
 {{content}}
 <footer></footer>
-<script>
-  let conn;
-  const reconnectInterval = 5000; // Reconnect every 5 seconds
-
-  function connect() {
-    conn = new WebSocket('ws://localhost:8080');
-
-    conn.onopen = function(e) {
-      console.log("Connection established!");
-    };
-
-    conn.onmessage = function(e) {
-      console.log(e.data);
-    };
-
-    conn.onerror = function(e) {
-      console.error("WebSocket error:", e);
-      // Try to reconnect if there is an error
-      reconnect();
-    };
-
-    conn.onclose = function(e) {
-      console.log("Connection closed:", e);
-      // Try to reconnect if the connection is closed
-      reconnect();
-    };
-  }
-
-  function reconnect() {
-    console.log("Attempting to reconnect...");
-    setTimeout(function() {
-      connect();
-    }, reconnectInterval);
-  }
-
-  // Initiate the first connection
-  connect();
-</script>
-
 </body>
 
 

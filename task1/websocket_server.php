@@ -50,6 +50,7 @@ while (true) {
                 $encodedMessage = encode($message);
                 foreach ($clients as $client) {
                     @socket_write($client, $encodedMessage, strlen($encodedMessage));
+                    unset($client);
                 }
             }
             socket_close($appClient);
@@ -70,19 +71,22 @@ while (true) {
         }
 
         if ($data) {
+            echo 'RAW DATA! ' . $data . PHP_EOL;
             $decodedData = decode($data);
-            if ($decodedData) {
-                echo "Received message: $decodedData\n";
-                $message = "Hello, client! You said: $decodedData";
+            if ($data) {
+                echo "Received message: $data\n";
+                $message = "Hello, client! You said: $data";
                 $encodedMessage = encode($message);
                 foreach ($clients as $sendClient) {
                     @socket_write($sendClient, $encodedMessage, strlen($encodedMessage));
+                    unset($sendClient);
                 }
             }
         }
+        unset($clients[$key]);
     }
 
-    usleep(100000);
+    sleep(1);
 }
 
 socket_close($sock);
@@ -138,6 +142,7 @@ function encode($payload, $type = 'text', $masked = false)
 
 function decode($data) {
     $firstByte = ord($data[0]);
+    $opcode = $firstByte & 0x0F;  // Extract opcode
     $secondByte = ord($data[1]);
     $isMasked = ($secondByte & 0x80) >> 7;
     $payloadLength = $secondByte & 0x7F;
@@ -165,6 +170,11 @@ function decode($data) {
         $payload = $unmaskedPayload;
     }
 
+    if ($opcode === 0x02) { // Binary frame
+        echo "Received Binary Frame\n";
+        return bin2hex($payload); // You could handle binary data differently
+    }
+
     if (!mb_check_encoding($payload, 'UTF-8')) {
         echo "Decoding Error: Payload data is not valid UTF-8.\n";
         return false;
@@ -173,3 +183,4 @@ function decode($data) {
     echo "Decoded Payload: $payload\n";
     return $payload;
 }
+

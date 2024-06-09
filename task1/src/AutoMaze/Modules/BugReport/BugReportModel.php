@@ -34,16 +34,27 @@ class BugReportModel extends Model
         $affectedRows = Storm::getStorm()->db->num_rows($res);
 
         if ($affectedRows > 0) {
-            Storm::getStorm()->emitEvent('bugStatusUpdate', $status);
+            $bug = $this->getBugById($id);
+            $data = [
+                'status' => $status,
+                'bugInfo' => $bug,
+            ];
+            Storm::getStorm()->emitEvent('bugStatusUpdate', $data);
         }
 
         return $affectedRows;
     }
 
+    public function getBugById(int $id)
+    {
+        $query = "SELECT * FROM `$this->tableName` WHERE `id` = ?;";
+        $res = Storm::getStorm()->db->pquery($query, [$id]);
+        return Storm::getStorm()->db->fetch_array($res);
+    }
+
 
     public function getBugs(): array
     {
-        $comments = Storm::getStorm()->getModuleInstance('comments');
         $query = "SELECT * FROM `$this->tableName`;";
         $res = Storm::getStorm()->db->query($query);
         $bugs = [];

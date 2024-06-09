@@ -91,3 +91,78 @@ async function apiAjax(url, method = 'GET', data = null) {
         throw new Error(`HTTP error! error: ${error}`);
     }
 }
+
+let conn;
+const reconnectInterval = 5000; // Interval to attempt reconnection
+
+function connect() {
+    conn = new WebSocket('ws://localhost:8080');
+
+    conn.onopen = function(e) {
+        console.log("Connection established! Listening for data...");
+    };
+
+    conn.onmessage = function(e) {
+        console.log('Received message from server:', e.data);
+        performActionBasedOnSMessage(e.data);
+    };
+
+    conn.onerror = function(e) {
+        console.error("WebSocket error:", e);
+        // The connection will be closed automatically if there is an error
+    };
+
+    conn.onclose = function(e) {
+        console.log("Connection closed:", e);
+        // Try to reconnect if the connection is closed
+        reconnect();
+    };
+}
+
+function performActionBasedOnSMessage(message) {
+    // Here, you would handle the message and trigger any client-side actions
+    console.log("Performing action with:", message);
+    // Example: if your messages are in JSON format
+    try {
+        const data = JSON.parse(message);
+
+        let storedId = localStorage.getItem('id');
+        if (data.event === 'commentAdded' && data.data.submitted_by === storedId) {
+            socketResponseSnack(`A new comment was added to your bug: ${data.data.content}`);
+        }
+
+        if (data.event === 'bugStatusUpdate' && data.data.bugInfo.submitted_by === storedId) {
+            socketResponseSnack(`You bug status was changed to: ${data.data.status}`);
+        }
+        // Perform actions based on 'data'
+    } catch (error) {
+        console.error(error);
+        console.error("Error parsing message:", message);
+    }
+}
+
+function reconnect() {
+    console.log("Attempting to reconnect...");
+    setTimeout(connect, reconnectInterval);
+}
+
+function socketResponseSnack(message) {
+    const div = document.createElement('div');
+    div.id = 'socket-snackbar';
+    div.classList.add('fixed');
+    div.classList.add('bottom-4');
+    div.classList.add('right-4');
+    div.classList.add('bg-green-500');
+    div.classList.add('text-white');
+    div.classList.add('p-4');
+    div.classList.add('rounded');
+    div.classList.add('shadow-md');
+    const p = document.createElement('p');
+    p.textContent = message;
+    div.appendChild(p);
+    document.querySelector('body').appendChild(div);
+    setTimeout(() => div.remove(), 5000);
+}
+
+// Initiate the first connection
+connect();

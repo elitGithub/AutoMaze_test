@@ -28,12 +28,15 @@ class CommentsModel extends Model
             Storm::getStorm()->db->pquery($query, [$content, $created_by, $bugId]);
             $lastInsertId = Storm::getStorm()->db->getLastInsertID();
 
+            $bugModule = Storm::getStorm()->getModuleInstance('bugreport');
+            $bug = $bugModule->getModel()->getBugById($bugId);
             $newComment = [
                 'id'         => $lastInsertId,
                 'content'    => $content,
                 'created_by' => $created_by,
                 'bug_id'     => $bugId,
                 'created_at' => date('Y-m-d H:i:s'),
+                'submitted_by' => $bug['submitted_by'],
             ];
 
             Storm::getStorm()->emitEvent('commentAdded', $newComment);

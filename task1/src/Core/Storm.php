@@ -183,13 +183,13 @@ class Storm
         }
     }
 
-    function emitEvent($event, $data) {
-        $message = json_encode(['event' => $event, 'data' => $data], JSON_UNESCAPED_UNICODE);
+    public function emitEvent($event, $data): bool
+    {
+        $message = json_encode(['event' => $event, 'data' => $data]);
         if ($message === false) {
             echo "Failed to encode JSON\n";
             return false;
         }
-        $message = json_encode(['event' => $event, 'data' => $data], JSON_UNESCAPED_UNICODE);
         if (json_last_error() !== JSON_ERROR_NONE) {
             echo "JSON encoding error: " . json_last_error_msg();
             return false;
@@ -216,7 +216,7 @@ class Storm
             return false;
         }
 
-        if (socket_write($socket, $encodedMessage, strlen($encodedMessage)) === false) {
+        if (socket_write($socket, $message, strlen($encodedMessage)) === false) {
             echo "socket_write() failed: reason: " . socket_strerror(socket_last_error($socket)) . "\n";
             socket_close($socket);
             return false;

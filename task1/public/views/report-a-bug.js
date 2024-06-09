@@ -1,6 +1,6 @@
 // polyfill for crypto.randomUUID, because we may not work under a secure environment like HTTPS.
 if (typeof crypto.randomUUID !== 'function') {
-  crypto.randomUUID = function() {
+  crypto.randomUUID = function () {
     const hex = (n) => {
       const str = n.toString(16);
       return str.length === 1 ? '0' + str : str;
