@@ -44,10 +44,16 @@ class AdminController extends Controller
         if (isset($response['error'])) {
             return $this->login(Storm::getStorm()->request);
         }
+
+
         Storm::getStorm()->session->addValue('loginToken', $response['access_token']);
         Storm::getStorm()->session->addValue('token_type', $response['token_type']);
         Storm::getStorm()->session->addValue('github_scope', $response['scope']);
         Storm::getStorm()->session->addValue('loggedin', true);
+        Storm::getStorm()->session->addValue('last_login', date('Y-m-d H:i:s'));
+        Storm::getStorm()->session->addValue('ua', $_SERVER['HTTP_USER_AGENT']);
+        Storm::getStorm()->session->addValue('is_logged_in', true);
+
         return $this->index();
     }
 

@@ -317,33 +317,30 @@ function getRealIpAddr()
 }
 
 
-function encodeWebSocketFrame($payload, $type = 'text', $masked = false)
-{
+function encodeWebSocketFrame($payload) {
     $frame = [];
     $payloadLength = strlen($payload);
-    $frame[] = 0x81;  // 0x80 | 0x01 for final text frame
+    $frame[] = 0x81;  // Text frame and final frame
 
     if ($payloadLength <= 125) {
         $frame[] = $payloadLength;
     } elseif ($payloadLength <= 65535) {
-        $frame[] = 126;
+        $frame[] = 126;  // Payload length encoded in the next two bytes
         $frame[] = ($payloadLength >> 8) & 0xFF;
         $frame[] = $payloadLength & 0xFF;
     } else {
-        $frame[] = 127;
-        $frame[] = ($payloadLength >> 56) & 0xFF;
-        $frame[] = ($payloadLength >> 48) & 0xFF;
-        $frame[] = ($payloadLength >> 40) & 0xFF;
-        $frame[] = ($payloadLength >> 32) & 0xFF;
+        $frame[] = 127;  // Payload length encoded in the next eight bytes
+        $frame[] = 0; $frame[] = 0; $frame[] = 0; $frame[] = 0; // Extended payload length (unused)
         $frame[] = ($payloadLength >> 24) & 0xFF;
         $frame[] = ($payloadLength >> 16) & 0xFF;
         $frame[] = ($payloadLength >> 8) & 0xFF;
         $frame[] = $payloadLength & 0xFF;
     }
 
+    // Append the payload directly to the frame
     foreach (str_split($payload) as $char) {
         $frame[] = ord($char);
     }
 
-    return implode(array_map("chr", $frame));
+    return implode("", array_map("chr", $frame));
 }

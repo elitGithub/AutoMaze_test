@@ -189,6 +189,16 @@ class Storm
             echo "Failed to encode JSON\n";
             return false;
         }
+        $message = json_encode(['event' => $event, 'data' => $data], JSON_UNESCAPED_UNICODE);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            echo "JSON encoding error: " . json_last_error_msg();
+            return false;
+        }
+
+        if (!mb_check_encoding($message, 'UTF-8')) {
+            echo "Non UTF-8 data detected";
+            return false;
+        }
 
         $encodedMessage = encodeWebSocketFrame($message);
         $host = '127.0.0.1';
